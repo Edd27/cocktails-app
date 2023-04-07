@@ -3,5 +3,6 @@
 @tailwind utilities;
 
 body {
-  @apply bg-primary-900;
+  @apply bg-zinc-200;
+  @apply dark:bg-zinc-900;
 }

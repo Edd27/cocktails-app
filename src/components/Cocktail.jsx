@@ -1,65 +1,101 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { capitalizeFirstLetter } from '../utils/capitalizeFirstLetter'
-import { IconChevronDown, IconChevronRight } from '@tabler/icons-react'
+import {
+  IconChevronDown,
+  IconChevronRight,
+  IconCategory,
+  IconGlass,
+  IconAlertTriangleFilled,
+  IconList
+} from '@tabler/icons-react'
 
 const Cocktail = ({ cocktail }) => {
-  const [image, setImage] = useState(null)
   const [isExpanded, setIsExpanded] = useState(false)
-  const generateImage = async () => {
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        prompt: `${cocktail.name ?? ''} cocktail`,
-        n: 1,
-        size: '1024x1024'
-      })
-    }
-    const reponse = await fetch(import.meta.env.VITE_OPENAPI_API_URL, options)
-    const data = await reponse.json()
-    if (data.error) {
-      setImage('/cocktail.svg')
-      return
-    }
-    setImage(data.data[0].url)
-  }
 
-  useEffect(() => {
-    generateImage()
-  }, [])
+  const ingredients = Array.from(
+    new Set(
+      Object.entries(cocktail)
+        .filter(([key, value]) => key.includes('strIngredient') && value)
+        .map(([key, value]) => value)
+    )
+  )
 
   return (
-    <div className="bg-primary-800 w-full max-w-full overflow-hidden rounded-md shadow-lg sm:hover:scale-105 duration-300 h-fit">
-      {!image && <div className="h-[250px] bg-gray-700 animate-pulse"></div>}
-      {image && (
-        <div className="h-[250px]">
-          <img
-            src={image}
-            alt={cocktail.name}
-            className="object-cover w-full h-full transition-all ease-in duration-300"
-          />
-        </div>
-      )}
+    <div className="bg-zinc-800 w-full max-w-full overflow-hidden rounded-md shadow-lg sm:hover:scale-105 duration-300 h-fit">
+      <div className="h-[250px] relative">
+        <div className="w-full h-full animate-pulse bg-zinc-700"></div>
+        <img
+          loading="lazy"
+          src={cocktail.strDrinkThumb || '/cocktail.png'}
+          alt={cocktail.strDrink}
+          className="object-cover w-full h-full transition-all ease-in duration-300 absolute top-0 left-0"
+        />
+      </div>
       <div className="flex flex-col justify-between h-fit">
         <div
-          className={`p-3 overflow-hidden min-h-[100px] ${
+          className={`p-3 overflow-hidden min-h-[100px] flex flex-col gap-5 ${
             isExpanded ? 'h-fit' : 'h-[100px]'
           }`}
         >
-          <h2 className="font-bold">{capitalizeFirstLetter(cocktail.name)}</h2>
-          <p className="text-primary-400 font-light">{cocktail.instructions}</p>
-          <ul className="mt-6">
-            <li>Ingredients:</li>
-            {cocktail.ingredients.map((ingredient) => (
-              <li key={ingredient} className="flex">
-                <IconChevronRight />
-                <span>{ingredient}</span>
-              </li>
-            ))}
-          </ul>
+          <div>
+            <h2 className="font-bold text-lg">
+              {capitalizeFirstLetter(cocktail.strDrink)}
+            </h2>
+            <p className="text-primary-400 font-semibold text-zinc-200">
+              {cocktail.strInstructions}
+            </p>
+          </div>
+          <div>
+            <p className="font-bold text-md flex items-center gap-1">
+              <span>
+                <IconList />
+              </span>
+              <span>Ingredients</span>
+            </p>
+            <ul className="text-zinc-200 ml-5 font-semibold">
+              {ingredients.map((ingredient) => (
+                <li key={`${cocktail.strDrink}.${ingredient}`} className="flex">
+                  <IconChevronRight />
+                  <span>{ingredient}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="font-bold text-md flex items-center gap-1">
+              <span>
+                <IconGlass />
+              </span>
+              <span>Glass type</span>
+            </p>
+            <p className="text-zinc-200 ml-7 font-semibold">
+              {cocktail.strGlass}
+            </p>
+          </div>
+          <div>
+            <p className="font-bold text-md flex items-center gap-1">
+              <span>
+                <IconCategory />
+              </span>
+              <span>Category</span>
+            </p>
+            <p className="text-zinc-200 ml-7 font-semibold">
+              {cocktail.strCategory}
+            </p>
+          </div>
+          <div>
+            <p className="font-bold text-md flex items-center gap-1">
+              <span>
+                <IconAlertTriangleFilled />
+              </span>
+              <span>Alcoholic</span>
+            </p>
+            <p className="text-zinc-200 ml-7 font-semibold">
+              {cocktail.strAlcoholic.toLowerCase() === 'alcoholic'
+                ? 'Yes'
+                : 'No'}
+            </p>
+          </div>
         </div>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
