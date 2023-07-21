@@ -21,14 +21,14 @@ const Cocktail = ({ cocktail }) => {
   )
 
   return (
-    <div className="bg-zinc-800 w-full max-w-full overflow-hidden rounded-md shadow-lg sm:hover:scale-105 duration-300 h-fit">
+    <div className="bg-zinc-800 w-full max-w-full overflow-hidden rounded-md shadow-lg h-fit">
       <div className="h-[250px] relative">
         <div className="w-full h-full animate-pulse bg-zinc-700"></div>
         <img
           loading="lazy"
           src={cocktail.strDrinkThumb || '/cocktail.png'}
           alt={cocktail.strDrink}
-          className="object-cover w-full h-full transition-all ease-in duration-300 absolute top-0 left-0"
+          className="object-cover w-full h-full transition-all ease-in duration-300 absolute top-0 left-0 hover:scale-105"
         />
       </div>
       <div className="flex flex-col justify-between h-fit">
