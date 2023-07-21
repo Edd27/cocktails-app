@@ -40,7 +40,7 @@ const App = () => {
         </div>
       )}
       {!isLoading && cocktails.length > 0 && (
-        <div className="px-2 sm:px-4 md:px-24 pb-32 grid gap-3 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+        <div className="px-2 sm:px-4 md:px-24 pb-32 grid gap-3 grid-cols-[repeat(auto-fill,minmax(230px,1fr))]">
           {cocktails.map((cocktail) => (
             <Cocktail key={cocktail.idDrink} cocktail={cocktail} />
           ))}
